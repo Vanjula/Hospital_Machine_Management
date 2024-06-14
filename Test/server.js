@@ -2,12 +2,15 @@ const express = require('express');
 const path = require('path');
 const config = require('./config/database');
 const bodyParser = require('body-parser');
+
+const expressMessages = require('express-messages');
 const session = require('express-session');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const port = 5000;
 const app = express();
 const multer = require('multer');
+const passport = require('passport');
 
 
 app.use(cors()); // Fixed middleware usage
@@ -20,6 +23,33 @@ db.on('error', console.error.bind(console, 'connection error: '));
 db.once('open', function () {
   console.log('Connected successfully');
 });
+
+
+// Express session middleware
+app.set('trust proxy', 1);
+app.use(session({
+  secret: 'keyboard cat',
+  resave: true,
+  saveUninitialized: true,
+  cookie: {
+    maxAge: 3600000, 
+    },
+}));
+
+
+require('./config/passport')(passport); // Assuming your Passport configuration is in 'config/passport.js'
+
+// ... other server setup code ...
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Express messages middleware
+app.use((req, res, next) => {
+  res.locals.messages = expressMessages(req, res);
+  next();
+});
+
 
 
 const storage = multer.memoryStorage();
@@ -141,39 +171,31 @@ app.get('/api/machineModels', async (req, res) => {
 });
 
 app.post('/api/save', upload.fields([{ name: 'vault_approval_document' }, { name: 'license_document' }]), (req, res) => {
-  const {
-    clinic_approval_from,
-    clinic_approval_to,
-    hospital_id,
-    treatment_type_id,
-    machine_type_id,
-    machine_protocol_id,
-    preventive_maintenance_id,
-    photon_ff_id,
-    photon_fff_id,
-    electron_id,
-    brachy_source_id,
-    machine_model_id,
-  } = req.body;
+  console.log(req.body);
 
-  // Check if the required fields are present
-  if (!clinic_approval_from || !clinic_approval_to || !hospital_id || !treatment_type_id || !machine_type_id || !machine_protocol_id || !preventive_maintenance_id || !photon_ff_id || !photon_fff_id || !electron_id || !brachy_source_id || !machine_model_id) {
-    return res.status(400).send('All required fields must be provided.');
+  // Create a copy of req.body to add file buffers
+  const machineData = { ...req.body };
+
+  // Check if files exist before accessing their properties
+  if (req.files && req.files['vault_approval_document']) {
+    machineData.vault_approval_document = req.files['vault_approval_document'][0].buffer;
+  } else {
+    machineData.vault_approval_document = null; // or handle accordingly if needed
   }
 
-  // Check if the "to" date is greater than the "from" date
-  if (new Date(clinic_approval_to) <= new Date(clinic_approval_from)) {
-    return res.status(400).send('"To" date must be greater than "From" date.');
+  if (req.files && req.files['license_document']) {
+    machineData.license_document = req.files['license_document'][0].buffer;
+  } else {
+    machineData.license_document = null; // or handle accordingly if needed
   }
 
-  // Prepare the data to be saved
-  const machineData = {
-    ...req.body,
-    vault_approval_document: req.files['vault_approval_document'] ? req.files['vault_approval_document'][0].buffer : undefined,
-    license_document: req.files['license_document'] ? req.files['license_document'][0].buffer : undefined,
-  };
+  // Log machineData to verify its structure before saving
+  console.log('Machine Data:', machineData);
 
+  // Create a new Machine instance with the combined data
   const machine = new Machine(machineData);
+
+  // Save the machine instance to the database
   machine.save()
     .then(result => res.status(201).send(result))
     .catch(error => {
@@ -182,7 +204,11 @@ app.post('/api/save', upload.fields([{ name: 'vault_approval_document' }, { name
     });
 });
 
+const user = require('./routes/user');
+app.use("/api/auth",user);
 
+const Machine1 = require('./routes/admin');
+app.use("/api/Machine",Machine1);
 
 
 app.listen(port, () => {

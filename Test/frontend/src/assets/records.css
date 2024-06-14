@@ -1,0 +1,25 @@
+/* records.css */
+
+.machine-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.machine-table th, .machine-table td {
+  border: 1px solid #dddddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.machine-table th {
+  background-color: #f2f2f2;
+}
+
+.machine-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.machine-table tbody tr:hover {
+  background-color: #e9e9e9;
+}

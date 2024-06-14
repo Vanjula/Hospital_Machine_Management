@@ -47,13 +47,6 @@ var MachineSchema = mongoose.Schema({
     },
     clinic_approval_to: {
         type: Date,
-        
-        validate: {
-            validator: function(value) {
-                return value > this.clinic_approval_from;
-            },
-            message: 'Clinic approval "to" date must be greater than "from" date.'
-        }
     },
     uptime_weekdays: {
         type: Number,

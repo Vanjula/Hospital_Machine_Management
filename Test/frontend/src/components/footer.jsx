@@ -1,11 +1,22 @@
-import React  from "react";
-function footer(){
 
-    return (
-        <div className="foot">
-this is footer
-        </div>
-    )
-}
+import React from "react";
+import styled from "styled-components";
 
-export default footer;
+const FooterContainer = styled.footer`
+  background-color: #333;
+  color: #fff;
+  padding: 20px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+`;
+
+const Footer = () => {
+  return (
+    <FooterContainer>
+      <p>&copy; 2024 Your Company</p>
+    </FooterContainer>
+  );
+};
+
+export default Footer;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+import '../assets/machine.css'
 const MachineForm = () => {
   const [formData, setFormData] = useState({
     machine_name: "",
@@ -19,16 +19,16 @@ const MachineForm = () => {
     uptime_saturday: "",
     contract_from: "",
     contract_to: "",
-    hospital_id: "",
-    treatment_type_id: "",
-    machine_type_id: "",
-    machine_protocol_id: "",
-    preventive_maintenance_id: "",
-    photon_ff_id: "",
-    photon_fff_id: "",
-    electron_id: "",
-    brachy_source_id: "",
-    machine_model_id: "",
+    hospital: "",
+    treatment_type: "",
+    machine_type: "",
+    machine_protocol: "",
+    preventive_maintenance: "",
+    photon_ff: "",
+    photon_fff: "",
+    electron: "",
+    brachy_source: "",
+    machine_model: "",
   });
 
   const [dropdownOptions, setDropdownOptions] = useState({
@@ -71,7 +71,8 @@ const MachineForm = () => {
           axios.get("http://localhost:5000/api/brachySources"),
           axios.get("http://localhost:5000/api/machineModels"),
         ]);
-
+        console.log(hospitals.data);
+        console.log(treatmentTypes.data);
         setDropdownOptions({
           hospitals: hospitals.data,
           treatmentTypes: treatmentTypes.data,
@@ -102,24 +103,25 @@ const MachineForm = () => {
     setFormData({ ...formData, [name]: files[0] });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const formDataObj = new FormData();
-      for (let key in formData) {
-        formDataObj.append(key, formData[key]);
-      }
-      console.log(formDataObj)
-      await axios.post("http://localhost:5000/api/save", formDataObj, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-      alert("Machine data submitted successfully!");
+    // Log the formData to verify it contains the expected data
+    console.log("Form Data being sent:", formData);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/save",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Form submitted successfully:", response.data);
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("Error submitting form");
     }
   };
 
@@ -446,6 +448,9 @@ const MachineForm = () => {
         </select>
       </div>
       <button type="submit">Submit</button>
+      <br />
+      <br />
+      <p>.</p>
     </form>
   );
 };
