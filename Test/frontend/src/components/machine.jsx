@@ -60,16 +60,16 @@ const MachineForm = () => {
           brachySources,
           machineModels,
         ] = await Promise.all([
-          axios.get("http://localhost:3000/api/hospitals"),
-          axios.get("http://localhost:3000/api/treatmentTypes"),
-          axios.get("http://localhost:3000/api/machineTypes"),
-          axios.get("http://localhost:3000/api/machineProtocols"),
-          axios.get("http://localhost:3000/api/preventiveMaintenances"),
-          axios.get("http://localhost:3000/api/photonFFs"),
-          axios.get("http://localhost:3000/api/photonFFFs"),
-          axios.get("http://localhost:3000/api/electrons"),
-          axios.get("http://localhost:3000/api/brachySources"),
-          axios.get("http://localhost:3000/api/machineModels"),
+          axios.get("http://localhost:5000/api/hospitals"),
+          axios.get("http://localhost:5000/api/treatmentTypes"),
+          axios.get("http://localhost:5000/api/machineTypes"),
+          axios.get("http://localhost:5000/api/machineProtocols"),
+          axios.get("http://localhost:5000/api/preventiveMaintenances"),
+          axios.get("http://localhost:5000/api/photonFFs"),
+          axios.get("http://localhost:5000/api/photonFFFs"),
+          axios.get("http://localhost:5000/api/electrons"),
+          axios.get("http://localhost:5000/api/brachySources"),
+          axios.get("http://localhost:5000/api/machineModels"),
         ]);
 
         setDropdownOptions({
@@ -109,8 +109,8 @@ const MachineForm = () => {
       for (let key in formData) {
         formDataObj.append(key, formData[key]);
       }
-
-      await axios.post("/api/machines", formDataObj, {
+      console.log(formDataObj)
+      await axios.post("http://localhost:5000/api/save", formDataObj, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
