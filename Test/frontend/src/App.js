@@ -11,7 +11,7 @@ import VerifyOTP from "./components/VerifyOTP";
 import ResetPassword from "./components/ResetPassword";
 import Records from "./components/records"
 import Updation from "./components/updation"
-
+import Land from "./components/landing";
 function App() {
   return (
     <div className="app">
@@ -26,6 +26,8 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/records" element={<Records />} />
            <Route path="/update" element={<Updation />} />
+                      <Route path="/" element={<Land />} />
+
         </Routes>
         <Footer/>
       </Router>

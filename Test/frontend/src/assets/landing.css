@@ -1,0 +1,91 @@
+.App {
+  font-family: Arial, sans-serif;
+  color: white;
+  text-align: center;
+}
+
+.App-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.navbar ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar ul li {
+  cursor: pointer;
+  font-size: 16px;
+}
+.navbar ul li:hover::after {
+  width: 100%;
+  left: 0;
+  background: #fff;
+}
+
+.navbar ul li:hover {
+  color: #ff9800;
+}
+.navbar ul li .fas {
+  font-size: 20px;
+  transition: color 0.3s ease;
+}
+
+.navbar ul li:hover .fas {
+  color: #ff9800;
+}
+.hero-section {
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+}
+
+.hero-content {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.hero-content p {
+  margin: 10px 0;
+}
+
+.hero-content h1 {
+  margin: 10px 0;
+  font-size: 48px;
+}
+
+.discover-button {
+  padding: 10px 20px;
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.discover-button:hover {
+  background-color: #e67e00;
+  transform: scale(1.05);
+}

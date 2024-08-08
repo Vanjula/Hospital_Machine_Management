@@ -49,7 +49,7 @@ router.post('/register', async function(req, res) {
         });
         await newUser.save();
 
-        await mailer(email, 'reg', 'Welcome to Raattai and happy purchasing. Please confirm your registration by login to http://3.6.184.48:3000/login');
+        await mailer(email, 'reg', 'On behalf of the entire team, it is my great pleasure to welcome you to our organization. We are delighted to have you join us and are excited about the wealth of experience, knowledge, and enthusiasm you bring. Our organization is dedicated to [mission/goal], and every new member plays a crucial role in helping us achieve our objectives. We believe that with your unique skills and perspectives, we can continue to innovate and excel in our field. We have a dynamic and supportive team that is always ready to assist you in getting settled and finding your way. Our culture is one of collaboration, continuous learning, and growth. We encourage you to take full advantage of the resources available and to engage actively with your colleagues. During the onboarding process, you will be introduced to various aspects of our operations, values, and vision. We aim to provide you with all the tools and information you need to succeed and feel at home here. If you have any questions or need assistance at any point, please do not hesitate to reach out to your supervisor, the HR team, or any of our friendly staff members. We are all here to help you thrive. Thank you for choosing to be a part of our team. We are confident that your contributions will help us reach new heights and achieve our collective goals. Welcome aboard, and we look forward to a successful journey together! Warm regards,');
        
         res.json({ success: 'You will receive an email notification.' });
 

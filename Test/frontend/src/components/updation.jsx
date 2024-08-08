@@ -23,19 +23,35 @@ const MachineList = () => {
     fetchMachines(); // Call fetchMachines inside useEffect
   }, []);
 
-  const handleDelete = async (machineId) => {
-    try {
-      await axios.delete(
-        `http://localhost:5000/api/Machine/delete/${machineId}`
-      );
-      // After deletion, fetch machines again to update the list
-      fetchMachines();
-    } catch (err) {
-      console.error("Error deleting machine:", err);
-      // Handle delete error if needed
-    }
-  };
+//   const handleDelete = async (machineId) => {
+//     try {
+//       await axios.delete(
+//         `http://localhost:5000/api/Machine/delete/${machineId}`
+//       );
+//       // After deletion, fetch machines again to update the list
+//       fetchMachines();
+//     } catch (err) {
+//       console.error("Error deleting machine:", err);
+//       // Handle delete error if needed
+//     }
+//   };
+const handleDelete = async (machineId) => {
+  try {
+    const response = await axios.delete(
+      `http://localhost:5000/api/Machine/delete/${machineId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Include token if needed
+        },
+      }
+    );
+    console.log("Machine deleted successfully:", response.data);
+          fetchMachines();
 
+  } catch (error) {
+    console.error("Error deleting machine:", error);
+  }
+};
   if (error) {
     return <div>Error: {error}</div>;
   }
@@ -43,6 +59,9 @@ const MachineList = () => {
   return (
     <div>
       <h2>Machine List</h2>
+      <button className="btn-add">
+        <a href="/add-machine">Add Machine</a>
+      </button>
       <table className="machine-table">
         <thead>
           <tr>

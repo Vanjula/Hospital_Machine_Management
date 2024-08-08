@@ -103,27 +103,41 @@ const MachineForm = () => {
     setFormData({ ...formData, [name]: files[0] });
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+const handleSubmit = async (event) => {
+  event.preventDefault();
 
-    // Log the formData to verify it contains the expected data
-    console.log("Form Data being sent:", formData);
+  // Log the formData to verify it contains the expected data
+  console.log("Form Data being sent:", formData);
 
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/api/save",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log("Form submitted successfully:", response.data);
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
-  };
+  const token = localStorage.getItem("Authorization"); // Retrieve the token from localStorage
+
+  if (!token) {
+    console.error("No token found, user might not be authenticated");
+    return;
+  }
+
+  // Create a new FormData object
+  const formDataToSend = new FormData();
+  for (const key in formData) {
+    formDataToSend.append(key, formData[key]);
+  }
+
+  try {
+    const response = await axios.post(
+      "http://192.168.245.209:5000/api/save",
+      formDataToSend,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `${token}`, // Include the token in the Authorization header
+        },
+      }
+    );
+    console.log("Form submitted successfully:", response.data);
+  } catch (error) {
+    console.error("Error submitting form:", error);
+  }
+};
 
   return (
     <form onSubmit={handleSubmit}>

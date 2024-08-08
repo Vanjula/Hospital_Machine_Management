@@ -14,6 +14,7 @@ const Machine = require('../models/Machine.js');
 
 function authenticateToken(req, res, next) {
     const token = req.headers['authorization']; 
+    console.log(token);
     if (!token) {
         return res.status(401).json({ error: 'Unauthorized: No token provided' });
     }
@@ -43,44 +44,60 @@ router.post('/add', authenticateToken, async (req, res) => {
 
     // Check if user exists and has the role 'superadmin'
     if (!user || user.role !== 'superadmin') {
+      console.log("HI Super Admin")
       return res.status(403).json({ message: 'Forbidden' });
     }
 
-    console.log(req.body);
-    const machineData = { ...req.body };
+     console.log(req.body);
 
-    // Handle vault_approval_document and license_document file uploads
-    if (req.files) {
-      if (req.files['vault_approval_document']) {
-        machineData.vault_approval_document = req.files['vault_approval_document'][0].buffer;
-      } else {
-        machineData.vault_approval_document = null; // or handle accordingly if needed
-      }
+  // Create a copy of req.body to add file buffers
+  const machineData = { ...req.body };
 
-      if (req.files['license_document']) {
-        machineData.license_document = req.files['license_document'][0].buffer;
-      } else {
-        machineData.license_document = null; // or handle accordingly if needed
-      }
-    }
+  // Check if files exist before accessing their properties
+  if (req.files && req.files['vault_approval_document']) {
+    machineData.vault_approval_document = req.files['vault_approval_document'][0].buffer;
+  } else {
+    machineData.vault_approval_document = null; // or handle accordingly if needed
+  }
 
-    // Log machineData to verify its structure before saving
-    console.log('Machine Data:', machineData);
+  if (req.files && req.files['license_document']) {
+    machineData.license_document = req.files['license_document'][0].buffer;
+  } else {
+    machineData.license_document = null; // or handle accordingly if needed
+  }
 
-    // Create a new Machine instance with the combined data
-    const machine = new Machine(machineData);
+  // Log machineData to verify its structure before saving
+  console.log('Machine Data:', machineData);
 
-    // Save the machine instance to the database
-    machine.save()
-      .then(result => res.status(201).json({ message: "Success" }))
-      .catch(error => {
-        console.error('Error saving document:', error); // Log the detailed error
-        res.status(500).json({ message: "Failed to add machine" });
-      });
+  // Create a new Machine instance with the combined data
+  const machine = new Machine(machineData);
+
+  // Save the machine instance to the database
+  machine.save()
+    .then(result => res.status(201).send(result))
+    .catch(error => {
+      console.error('Error saving document:', error); // Log the detailed error
+      res.status(500).send(error);
+    });
 
   } catch (error) {
     console.error('Error finding user:', error);
     res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+router.delete('/delete/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await Machine.findByIdAndDelete(id);
+    if (result) {
+      res.status(200).send({ message: 'Machine deleted successfully' });
+    } else {
+      res.status(404).send({ message: 'Machine not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting machine:', error);
+    res.status(500).send({ error: 'Internal Server Error' });
   }
 });
 
@@ -93,6 +110,7 @@ router.get('/machines', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch machines' });
   }
 });
+
 
 
 //change password

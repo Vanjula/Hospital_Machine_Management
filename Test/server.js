@@ -11,9 +11,16 @@ const port = 5000;
 const app = express();
 const multer = require('multer');
 const passport = require('passport');
+const mailer = require('./utils/mailer.js');
 
 
-app.use(cors()); // Fixed middleware usage
+app.use(cors({
+  origin: 'http://localhost:3000', // Replace with the actual origin of your frontend application
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true, // if you need to send cookies or other credentials
+  optionsSuccessStatus: 204
+}));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -170,7 +177,7 @@ app.get('/api/machineModels', async (req, res) => {
   }
 });
 
-app.post('/api/save', upload.fields([{ name: 'vault_approval_document' }, { name: 'license_document' }]), (req, res) => {
+app.post('/api/save', upload.fields([{ name: 'vault_approval_document' }, { name: 'license_document' }]), async  (req, res) => {
   console.log(req.body);
 
   // Create a copy of req.body to add file buffers
@@ -191,6 +198,7 @@ app.post('/api/save', upload.fields([{ name: 'vault_approval_document' }, { name
 
   // Log machineData to verify its structure before saving
   console.log('Machine Data:', machineData);
+  // await mailer('admin@gmail.com','Added',machineData);
 
   // Create a new Machine instance with the combined data
   const machine = new Machine(machineData);
